@@ -1,0 +1,25 @@
+@import url(https://fonts.googleapis.com/css?family=Public+Sans:400,400i,700,700i);
+
+:root {
+    --textWidth: 50vw;
+    --mobileWidth: 90vw;
+  }
+
+body {
+    font-family: "Public Sans", Helvetica, sans-serif;
+    padding: 1em;
+    margin: 0 auto;
+    background: #f9f9f9;
+  }
+
+.title-container {
+    width: var(--textWidth);
+    max-width: 800px;
+    margin: auto;
+  }
+
+.body-text {
+    width: var(--textWidth);
+    max-width: 800px;
+    margin: auto;
+}
