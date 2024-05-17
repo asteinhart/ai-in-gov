@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <title>AI in Gov</title>
 </head>
@@ -20,12 +21,12 @@
         </div>
         <hr />
     </div>
+      <input type="button" name="grouping" value="To Grid" onclick='scrollToGrid()'>
     <div class = "body-text">
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum error beatae, assumenda qui ullam expedita obcaecati nesciunt incidunt sapiente quia sint explicabo aliquid libero culpa. Delectus, commodi. Dicta, sit nostrum!</p>
-        <div class="chart-container">
-
         </div>
+        <div id="myGrid"class="ag-theme-quartz"></div>
     </div>
-    <script src="js/main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

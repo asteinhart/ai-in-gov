@@ -14,12 +14,22 @@ body {
 
 .title-container {
     width: var(--textWidth);
-    max-width: 800px;
+
     margin: auto;
   }
 
 .body-text {
     width: var(--textWidth);
-    max-width: 800px;
     margin: auto;
+}
+
+#myGrid {
+  width: 90vw;
+  height: 500px;
+  margin-left: 0;
+}
+
+.space {
+  background-color: green;
+  height: 1000px;
 }
