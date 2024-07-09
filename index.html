@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="static/style.css" />
     <title>AI in Gov</title>
 </head>
 <body>
@@ -21,12 +21,28 @@
         </div>
         <hr />
     </div>
-      <input type="button" name="grouping" value="To Grid" onclick='scrollToGrid()'>
+     
     <div class = "body-text">
+      <input type="button" name="grouping" value="To Table" onclick='scrollToTable()'>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum error beatae, assumenda qui ullam expedita obcaecati nesciunt incidunt sapiente quia sint explicabo aliquid libero culpa. Delectus, commodi. Dicta, sit nostrum!</p>
-        </div>
-        <div id="myGrid"class="ag-theme-quartz"></div>
+      </div>
+    <div class="container" id = 'container'>
+      <input type="button" name="grouping" value="change" onclick='switchChart()'>
+    <div class="graphic-container"></div>
+      <div class="scroller" id = 's1'>
+        Lets start by looking at one AI use case as reported by the federal government.
+      </div>
+      <div class="scroller" id = 's2'>
+        Lets start by looking at one AI use case as reported by the federal government.
+      </div>
+      <div class="scroller" id = 's3'>
+        Lets start by looking at one AI use case as reported by the federal government.
+      </div>
     </div>
-    <script src="script.js"></script>
+  </div>
+    
+        <div id="table"class="ag-theme-quartz"></div>
+    </div>
+    <script src="static/js/script.js"></script>
 </body>
 </html>

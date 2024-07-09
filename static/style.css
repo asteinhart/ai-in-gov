@@ -23,13 +23,39 @@ body {
     margin: auto;
 }
 
-#myGrid {
-  width: 90vw;
+#table {
+  width: 75%;
+  margin: auto;
   height: 500px;
-  margin-left: 0;
 }
 
 .space {
   background-color: green;
   height: 1000px;
+}
+
+.scroller {
+  position: relative;
+  padding: 10px 20px;
+  width: 30%;
+  margin-top: 90vh;
+  margin-bottom: 20vh;
+  text-align: left;
+  margin-right: auto;
+  line-height: 1.2;
+  z-index: 2;
+}
+
+.graphic-container {
+  position: sticky;
+  top: 20vh;
+  z-index: 1;
+  margin: auto;
+  margin-right: 0;
+  width: 100%;
+  display: flex;
+}
+
+svg {
+  margin-left: auto;
 }
