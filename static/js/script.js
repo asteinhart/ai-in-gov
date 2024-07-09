@@ -49,12 +49,20 @@ const maxDeptY = d3.max(data, (d) => +d.dept_y);
 const maxDevX = d3.max(data, (d) => +d.dev_x);
 const maxDevY = d3.max(data, (d) => +d.dev_y);
 
-let tickValues = Array((Math.floor(maxDeptX/7)+1)).fill().map((x,i)=>(i*7) + 3)
+let tickValuesDept = Array((Math.floor(maxDeptX/7)+1)).fill().map((x,i)=>(i*7) + 3)
+let tickValuesDev = Array((Math.floor(maxDevX/7)+1)).fill().map((x,i)=>(i*7) + 3)
 
 
-const tickLabels = data.reduce((acc, obj) => {
+const tickLabelsDept = data.reduce((acc, obj) => {
     if (!acc.includes(obj.Department_Code)) {
         acc.push(obj.Department_Code);
+    }
+    return acc;
+}, []);
+
+const tickLabelsDev = data.reduce((acc, obj) => {
+    if (!acc.includes(obj.Development_Stage)) {
+        acc.push(obj.Development_Stage);
     }
     return acc;
 }, []);
@@ -90,12 +98,10 @@ function barChart() {
       .append("g")
       .attr("id", "x-axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x).tickValues(tickValues).tickFormat((d,i) => tickLabels[i]));
+      .call(d3.axisBottom(x).ticks(0).tickValues(tickValuesDept).tickFormat((d,i) => tickLabelsDept[i]));
 
-    chart
-        .append("g")
-        .attr("id", "y-axis")
-        .call(d3.axisLeft(y));
+    // remove ticks and line 
+    d3.selectAll("path,line").remove();
 
     chart
         .selectAll(".rect")
@@ -104,7 +110,6 @@ function barChart() {
         .append("g")
         .attr("class", (d) => d.Department)
         .append("rect")
-            
             .attr("x", (d) => x(d.dept_x))
             .attr("y", (d) => y(d.dept_y))
             .attr("width",5)
@@ -141,14 +146,12 @@ function switchChart() {
         .select("#x-axis")
         .transition()
         .duration(2000)
-        .call(d3.axisBottom(x));
-    
-    chart
-        .select("#y-axis")
-        .transition()
-        .duration(2000)
-        .call(d3.axisLeft(y));
+        .call(d3.axisBottom(x).ticks(0).tickValues(tickValuesDev).tickFormat((d,i) => tickLabelsDev[i]));
 
+    // remove ticks and line 
+    d3.selectAll("path,line").remove();
+    
+ 
     chart
         .selectAll("rect")
         .data(data)
@@ -196,7 +199,6 @@ function makeWaypoints() {
       element: document.getElementById("s1"),
       handler: function (direction) {
         if (direction == "down") {
-          removeAll();
           d3.select(".graphic-container")
             .transition()
             .duration(1000)
@@ -210,6 +212,14 @@ function makeWaypoints() {
       },
       offset: "100%",
     });
+    new Waypoint({
+        element: document.getElementById("s2"),
+        handler: function (direction) {
+          if (direction == "down") {
+            switchChart(flag);
+          }},
+        offset: "100%",
+      });
     
 } 
 
@@ -217,7 +227,7 @@ function makeWaypoints() {
 
 function init() {
     createTable(data);
-    //makeWaypoints();
+    makeWaypoints();
     barChart();
 }
 
