@@ -4,7 +4,7 @@
   --textWidth: 50vw;
   --mobileWidth: 90vw;
   --maxWidth: 900px;
-  --hightlightColor: #ee2b2b;
+  --hightlightColor: #800000;
 }
 
 body {
@@ -137,7 +137,7 @@ a:hover {
   background: #fff;
   background-color: #fff;
   border-radius: 3px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   padding: 15px 10px;
   pointer-events: auto;
   position: relative;
@@ -157,7 +157,7 @@ a:hover {
 }
 
 #sIntro {
-  margin-top: -20vh;
+  margin-top: 70vh;
 }
 
 #sClosing {

@@ -14,30 +14,32 @@ if (is_mobile) {
   height = window.innerHeight - margin.top - margin.bottom;
 }
 
-highlightColor = "red";
+highlightColor = "#800000";
 
-colorCodes5 = ["#d7191c", "#fda148", "#83cd7b", "#6ebed9", "#2c7bb6"];
+colorsDep = ["#fed98e", "#fe9929", "#d95f0e", "#993404", "#800000"];
+colorTech = ["#bae4bc", "#7bccc4", "#43a2ca", "#2c7bb6", "#0868ac"];
 const colors5 = {
-  "Department of Energy": colorCodes5[0],
-  "Department of Health and Human Services": colorCodes5[1],
-  "Department of Commerce": colorCodes5[2],
-  "Department of Homeland Security": colorCodes5[3],
-  "Department of Veterans Affairs": colorCodes5[4],
+  "Department of Energy": colorsDep[0],
+  "Department of Health and Human Services": colorsDep[1],
+  "Department of Commerce": colorsDep[2],
+  "Department of Homeland Security": colorsDep[3],
+  "Department of Veterans Affairs": colorsDep[4],
   "All Other Departments": "grey",
 
-  "Unspecified Machine Learning": colorCodes5[0],
-  "Neural Network": colorCodes5[1],
-  Other: colorCodes5[2],
-  "Natural Language Processing": colorCodes5[3],
-  "Machine Vision": colorCodes5[4],
+  "Unspecified Machine Learning": colorTech[4],
+  "Neural Network": colorTech[3],
+  "No Technique Provided": "grey",
+  Other: colorTech[2],
+  "Natural Language Processing": colorTech[1],
+  "Machine Vision": colorTech[0],
 };
 
-colorCodes3 = ["#fda148", "#83cd7b", "#2c7bb6"];
+colorsDev = ["#8c96c6", "#8856a7", "#810f7c"];
 
 const colors3 = {
-  "In Use": colorCodes3[1],
-  "In Development": colorCodes3[0],
-  "In Planning": colorCodes3[2],
+  "In Use": colorsDev[0],
+  "In Development": colorsDev[1],
+  "In Planning": colorsDev[2],
 };
 
 const defaultColor = "steelblue";
@@ -58,12 +60,24 @@ const startXMax = d3.max(data, (d) => +d.start_dep_x);
 const startYMax = 45;
 
 // -------- CHART FUNCTIONS ---------
+function isDark(bgColor) {
+  var color = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
+  var r = parseInt(color.substring(0, 2), 16); // hexToR
+  var g = parseInt(color.substring(2, 4), 16); // hexToG
+  var b = parseInt(color.substring(4, 6), 16); // hexToB
+
+  return r * 0.299 + g * 0.587 + b * 0.114 > 186;
+}
 
 function resetChart() {
-  d3.selectAll("rect")
-    .attr("fill", "steelblue")
+  d3.selectAll(".use-case")
+    .transition()
+    .duration(1000)
+    .attr("fill", defaultColor)
     .attr("stroke", "none")
     .attr("stroke-width", 1);
+
+  d3.selectAll(".label-text, .label-rect").remove();
 }
 
 function highlightDep() {
@@ -214,11 +228,12 @@ function startingChart() {
     .append("g")
     .attr("id", (d) => d.Use_Case_ID) // TODO what should this be
     .append("rect")
+    .attr("class", "use-case")
     .attr("x", (d) => x(+d.start_dep_x))
     .attr("y", (d) => y(+d.start_dep_y))
     .attr("width", boxSize())
     .attr("height", boxSize())
-    .attr("fill", "steelblue");
+    .attr("fill", defaultColor);
 
   // add tooltip
   chart
@@ -236,7 +251,7 @@ function switchStarting(col, transition = false) {
 
   var chart = d3.select("#g-chart");
 
-  selection = chart.selectAll("rect");
+  selection = chart.selectAll(".use-case");
 
   if (transition) {
     selection = selection.transition().duration(1000);
@@ -245,20 +260,16 @@ function switchStarting(col, transition = false) {
     .attr("x", (d) => x(d[xName]))
     .attr("y", (d) => y(d[yName]))
     .attr("fill", defaultColor);
-
-  // remove labels
-  chart.selectAll(".label").remove();
 }
 
 function switchSplit(col, colName, colors, transition = true) {
   resetChart();
-
   xName = col + "_x";
   yName = col + "_y";
 
   var chart = d3.select("#g-chart");
 
-  selection = chart.selectAll("rect");
+  selection = chart.selectAll(".use-case");
   if (transition) {
     selection = selection.transition().duration(1000);
   }
@@ -300,27 +311,50 @@ function switchSplit(col, colName, colors, transition = true) {
   }, {});
 
   for (const [name, value] of Object.entries(maxValues)) {
+    id_text = "text-" + name.split(" ").join("_");
+    id_rect = "rect-" + name.split(" ").join("_");
+
+    console.log(name, value);
+
     chart
       .append("text")
-      .transition()
-      .duration(1000)
-      .delay(500)
-      .attr("class", "label")
+      .attr("id", id_text)
+      .attr("class", "label-text")
       .attr("x", x(startXMax / 2))
       .attr("text-anchor", "middle")
       .attr("y", y(value))
-      .attr("fill", colors[name] || "grey")
-      .attr("color", "white")
+      .attr("fill", isDark(colors[name]) ? "black" : "white")
       .attr("font-weight", "bold")
       .attr("font-size", "1em")
-
+      .attr("opacity", 0)
       .text(name + " (" + result[name] + ")");
+
+    var rectBox = document.querySelector("#" + id_text).getBBox();
+
+    chart
+      .append("rect")
+      .attr("class", "label-rect")
+      .attr("id", id_rect)
+      .attr("x", rectBox.x - 5)
+      .attr("y", rectBox.y)
+      .attr("width", rectBox.width + 10)
+      .attr("height", rectBox.height)
+      .attr("rx", 6)
+      .attr("ry", 6)
+      .attr("fill", colors[name])
+      .attr("opacity", 0)
+      .lower();
+
+    d3.selectAll(".label-text, .label-rect")
+      .transition()
+      .duration(1000)
+      .attr("opacity", 1);
   }
 }
 function transitionChart(startName, endName) {
   const transition = async () => {
     switchStarting(startName, true);
-    await sleep(1000);
+    await sleep(1100);
     switchStarting(endName, false); // maybe true?
   };
   transition();
@@ -438,7 +472,7 @@ function makeWaypoints() {
           )
             .transition()
             .delay((d, i) => i * 100)
-            .attr("fill", "red");
+            .attr("fill", highlightColor);
         };
         cheating();
       } else {
@@ -457,11 +491,11 @@ function makeWaypoints() {
         switchStarting("start_t", false);
 
         // show all the missing tech
-        d3.selectAll("rect")
+        d3.selectAll(".use-case")
           .transition()
           .duration(1000)
           .attr("fill", (d) =>
-            d.tech_edit == "No Technique Provided" ? "grey" : "steelblue"
+            d.tech_edit == "No Technique Provided" ? "grey" : defaultColor
           );
       } else {
         // switch to starting chart
@@ -487,7 +521,7 @@ function makeWaypoints() {
     element: document.getElementById("sTechSource"),
     handler: function (direction) {
       if (direction == "down") {
-        d3.selectAll("rect")
+        d3.selectAll(".use-case")
           .transition()
           .duration(1000)
           .attr("fill", (d) =>
@@ -509,13 +543,13 @@ function makeWaypoints() {
 
         const cheating = async () => {
           await sleep(1100);
-          d3.selectAll("rect")
+          d3.selectAll(".use-case")
             .transition()
-            .duration(1000)
+            .duration(500)
             .attr("fill", (d) =>
               d.dev_edit == "No Development Stage Indicated"
                 ? "grey"
-                : "steelblue"
+                : defaultColor
             );
         };
         cheating();
@@ -545,6 +579,8 @@ function makeWaypoints() {
     handler: function (direction) {
       if (direction == "down") {
         //
+        d3.select(".graphic-container").style("position", "fixed");
+
         d3.selectAll(".graphic-container, #sClosing")
           .transition()
           .duration(1000)
