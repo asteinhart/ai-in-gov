@@ -138,6 +138,29 @@ a:hover {
   height: 600px;
 }
 
+.ag-theme-quartz {
+  --ag-font-size: 0.9em;
+  --ag-line-height: 25px;
+}
+
+.ag-theme-quartz .ag-header-cell-text {
+  font-weight: bold;
+}
+
+.ag-row .ag-cell {
+  display: flex;
+  align-items: center;
+}
+
+#filter-text-box {
+  width: 30%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  height: 30px;
+  font-weight: bold;
+}
+
 .space {
   background-color: green;
   height: 1000px;
@@ -165,7 +188,8 @@ a:hover {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   padding: 15px 10px;
   position: relative;
-  width: 50%;
+  width: 80%;
+  flex-wrap: wrap;
 }
 
 .tooltip-content {
@@ -176,6 +200,11 @@ a:hover {
   display: flex;
   justify-content: space-between;
   padding: 5px;
+  gap: 5px;
+}
+
+.tooltip-info > * {
+  padding: 2px;
 }
 
 #sIntro {
@@ -183,7 +212,11 @@ a:hover {
 }
 
 #sClosing {
-  padding-bottom: 40vh;
+  margin-bottom: 40vh;
+}
+
+#sFake {
+  background-color: var(--backgroundColor);
 }
 
 .graphic-container {
@@ -237,8 +270,12 @@ a:hover {
   background-color: grey;
 }
 
+svg {
+  margin-left: 10%;
+}
+
 /* mobile CSS */
-@media (min-width: 320px) and (max-width: 999px) {
+@media (min-width: 320px) and (max-width: 800px) {
   html {
     max-width: 100%;
   }
@@ -272,6 +309,7 @@ a:hover {
   .body-text {
     width: var(--mobileWidth);
     margin: 5%;
+    font-size: 1.2em;
   }
 
   .container {
@@ -284,13 +322,18 @@ a:hover {
   }
   .scroller {
     width: 65vw;
-    font-size: 12px;
+    font-size: 0.95em;
     background-color: white;
     border-radius: 5px;
     margin-inline: auto;
     text-align: left;
     word-spacing: normal;
     z-index: 5;
+    line-height: 1.2;
+  }
+
+  .highlight {
+    padding-block: 0;
   }
 
   svg {

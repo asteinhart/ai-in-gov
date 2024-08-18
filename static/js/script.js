@@ -1,14 +1,15 @@
 // data todo
-// load data correctly
-// mobiles version
+// make tooltip nicer maybe
+// colors
+// decide on technique label
 
 // ----- CONSTANTS -----
-const is_mobile = window.innerWidth < 600;
+const is_mobile = window.innerWidth < 800;
 const margin = { top: 10, right: 30, bottom: 30, left: 50 };
-const container = document.getElementById("container");
+const container = document.getElementById("graphic-container");
 const chartWidth = is_mobile
-  ? container.getBoundingClientRect().width * 0.9
-  : container.getBoundingClientRect().width * 0.4;
+  ? container.getBoundingClientRect().width * 0.95
+  : container.getBoundingClientRect().width * 0.8;
 let height;
 
 highlightColor = "#515151";
@@ -46,28 +47,23 @@ const defaultColor = "#01397D";
 // -------- MOBILE ---------
 // ----- mobile ------
 if (is_mobile) {
+  // change height of chart
   height = window.innerHeight * 0.8;
 
+  // move chart to top of container for formatting
   parent = document.querySelector(".container");
   chart = document.querySelector(".graphic-container");
   scrollers = document.querySelector(".scroller-container");
   parent.insertBefore(chart, scrollers);
+
+  // rm mention of tooltip (for now)
+  d3.select(".tooltip").remove();
+  document.querySelector("#hover-text").remove();
 } else {
   height = window.innerHeight - margin.top - margin.bottom;
 }
 
-// -------- LOAD/CLEAN DATA ---------
-
-// load data
-d3.csv("static/data/2023_ai_inventory_edit.csv", function (error, data) {
-  console.log(data);
-  sessionStorage.setItem("data", JSON.stringify(data));
-});
-
-let data = JSON.parse(sessionStorage.getItem("data"));
-
-//
-const startXMax = d3.max(data, (d) => +d.start_dep_x);
+const startXMax = 27;
 // current max is 37, maybe programmatically determine this
 const startYMax = 45;
 
@@ -108,7 +104,7 @@ function highlightDep() {
 function boxSize(numWidth = 27) {
   return is_mobile
     ? 8
-    : (chartWidth - margin.left - margin.right) / numWidth - 3.7;
+    : (chartWidth - margin.left - margin.right) / numWidth - 3.8;
 }
 
 function startingChart() {
@@ -142,8 +138,9 @@ function startingChart() {
   // Three function that change the tooltip when user hover / move / leave a voronoi cell
   var mouseover = function (d) {
     if (d) {
-      // avoids console error when cursor goes off chart
-
+      if (is_mobile) {
+        return;
+      }
       // show tooltip and update html
       Tooltip.style("opacity", 1) // show opacity only if there is a found data element
         .html(
@@ -186,6 +183,9 @@ function startingChart() {
     }
   };
   var mousemove = function () {
+    if (is_mobile) {
+      return;
+    }
     const [mouseX, mouseY] = d3.mouse(this);
     const [absMouseX, absMouseY] = d3.mouse(document.body);
     const tooltipWidth = Tooltip.node().offsetWidth;
@@ -193,14 +193,18 @@ function startingChart() {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
 
-    let tooltipX = mouseX + 100; // Add some offset to avoid overlapping with the cursor
+    let tooltipX = mouseX + (!is_mobile ? 100 : 0); // Add some offset to avoid overlapping with the cursor
     let tooltipY = mouseY;
-
-    console.log(absMouseX, tooltipWidth, windowWidth);
 
     // Adjust if the tooltip goes beyond the right edge of the window
 
     if (absMouseX + 100 + tooltipWidth > windowWidth) {
+      tooltipX = mouseX - tooltipWidth + 10;
+    }
+    // TODO for mobile
+    // left edge
+    if (absMouseX - tooltipWidth < 0) {
+      console.log("left edge");
       tooltipX = mouseX - tooltipWidth + 10;
     }
 
@@ -223,13 +227,6 @@ function startingChart() {
       d3.select(id).attr("stroke", "none");
     }
   };
-
-  //.ticks(0).tickValues(tickValuesTech).tickFormat((d,i) => wrap(tickLabelsTech[i], 20)))
-  //   .selectAll("text")
-  //         .attr("transform", function(d) {
-  //             return "rotate(15)"
-  //             });
-  //chart.selectAll('#x-axis text').each(insertLinebreaks);
 
   // remove ticks and line
   d3.selectAll("path,line").remove();
@@ -367,7 +364,7 @@ function switchSplit(col, colName, colors, transition = true) {
 function transitionChart(startName, endName) {
   const transition = async () => {
     switchStarting(startName, true);
-    await sleep(1100);
+    await sleep(1001);
     switchStarting(endName, false); // maybe true?
   };
   transition();
@@ -376,16 +373,41 @@ function transitionChart(startName, endName) {
 // -------- AG-GRID ---------
 // todo consider moving to https://datatables.net/ from ag grid
 let gridAPI;
-function createTable(data) {
+function createTable(tableData) {
   let cols_list = [];
-  for (col of Object.keys(data[0])) {
-    dict = { field: col };
+  for (col of Object.keys(tableData[0])) {
+    if (col == "Title") {
+      dict = {
+        field: col,
+        pinned: "left",
+        lockPinned: true,
+        width: is_mobile ? 250 : 300,
+        suppressMovable: true,
+        wrapText: true,
+        autoHeight: true,
+      };
+    } else if (col == "Summary") {
+      dict = {
+        field: col,
+        suppressMovable: true,
+        wrapText: true,
+        autoHeight: true,
+        width: 600,
+      };
+    } else {
+      dict = {
+        field: col,
+        suppressMovable: true,
+        wrapText: true,
+        autoHeight: true,
+      };
+    }
     cols_list.push(dict);
   }
 
   let gridOptions = {
     // Row Data: The data to be displayed.
-    rowData: data,
+    rowData: tableData,
     // Columns to be displayed (Should match rowData properties)
     columnDefs: cols_list,
   };
@@ -409,6 +431,11 @@ function scrollToTable() {
   const scrollIntoViewOptions = { behavior: "smooth" };
   table.scrollIntoView(scrollIntoViewOptions);
 }
+function scrollToTop() {
+  var top = document.getElementById("use-case-button");
+  const scrollIntoViewOptions = { behavior: "smooth" };
+  top.scrollIntoView(scrollIntoViewOptions);
+}
 
 const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -422,11 +449,21 @@ function makeWaypoints() {
     element: document.getElementById("sIntro"),
     handler: function (direction) {
       if (direction == "down") {
-        d3.select(".graphic-container")
-          .transition()
-          .duration(1000)
-          .style("opacity", "1");
+        async function fadeIn() {
+          d3.select(".graphic-container")
+            .transition()
+            .duration(1000)
+            .style("opacity", "1");
+          await sleep(1001);
+          switchStarting("start_dep", true);
+          await sleep(1001);
+          d3.select("g#TREAS-0004-2023 rect").dispatch("mouseleave");
+        }
+        fadeIn();
       } else {
+        d3.interrupt(d3.select(".graphic-container"));
+        switchStarting("start_dep", true);
+
         d3.select(".graphic-container")
           .transition()
           .duration(1000)
@@ -441,25 +478,28 @@ function makeWaypoints() {
       if (direction == "down") {
         // highlight one model
         // change color
-        d3.select("g#DOC-0029-2023 rect")
+        d3.select("g#TREAS-0004-2023 rect")
           .transition()
-          .duration(1000)
+          .duration(800)
           .attr("fill", highlightColor)
           .attr("x", x(-2))
           .attr("width", boxSize() * 2)
-          .attr("height", boxSize() * 2);
+          .attr("height", boxSize() * 2)
+          .on("end", () => {
+            if (!is_mobile) {
+              d3.select("g#TREAS-0004-2023 rect").dispatch("mouseover");
+              d3.select(".tooltip")
+                .transition()
+                .duration(500)
+                .style("right", "2%")
+                .style("top", "2%");
+            }
+          });
         // enable tooltip
-        if (!is_mobile) {
-          d3.select("g#DOC-0029-2023 rect").dispatch("mouseover");
-          d3.select(".tooltip")
-            .style("right", "5%")
-            .style("top", "5%")
-            .style("width", "100%");
-        }
       } else {
         // switch to starting chart
         switchStarting("start_dep", true);
-        d3.select("g#DOC-0029-2023 rect").dispatch("mouseleave");
+        d3.select("g#TREAS-0004-2023 rect").dispatch("mouseleave");
       }
     },
     offset: offset,
@@ -470,16 +510,16 @@ function makeWaypoints() {
     handler: function (direction) {
       if (direction == "down") {
         // switch to split chart
-        d3.select("g#DOC-0029-2023 rect").dispatch("mouseleave");
+        d3.select("g#TREAS-0004-2023 rect").dispatch("mouseleave");
         switchSplit("split_dep", "dep_edit", colors5);
       } else {
         // switch to starting chart
 
         const cheating = async () => {
           switchStarting("start_dep", true);
-          await sleep(1100);
+          await sleep(1001);
 
-          d3.select("g#DOC-0029-2023 rect")
+          d3.select("g#TREAS-0004-2023 rect")
             .transition()
             .duration(1000)
             .attr("fill", highlightColor)
@@ -488,8 +528,8 @@ function makeWaypoints() {
             .attr("height", boxSize() * 2);
           // enable tooltip
           if (!is_mobile) {
-            d3.select("g#DOC-0029-2023 rect").dispatch("mouseover");
-            d3.select(".tooltip").style("left", "50%").style("top", 0);
+            d3.select("g#TREAS-0004-2023 rect").dispatch("mouseover");
+            d3.select(".tooltip").style("left", "2%").style("top", "2%");
           }
         };
         cheating();
@@ -508,7 +548,7 @@ function makeWaypoints() {
         // TODO change to actually chained https://stackoverflow.com/questions/59513673/how-to-chain-d3-transitions
 
         const cheating = async () => {
-          await sleep(1100);
+          await sleep(1001);
           d3.selectAll(
             "#DOC-0005-2023 rect, #DHS-0032-2023 rect, #HHS-0089-2023 rect, #HHS-0014-2023 rect"
           )
@@ -557,7 +597,7 @@ function makeWaypoints() {
       } else {
         const cheating = async () => {
           resetChart();
-          await sleep(1100);
+          await sleep(1001);
           d3.selectAll(
             "#DOC-0005-2023 rect, #DHS-0032-2023 rect, #HHS-0089-2023 rect, #HHS-0014-2023 rect"
           )
@@ -627,7 +667,7 @@ function makeWaypoints() {
         transitionChart("start_t", "start_dev");
 
         const cheating = async () => {
-          await sleep(1100);
+          await sleep(1001);
           d3.selectAll(".use-case")
             .transition()
             .duration(500)
@@ -663,7 +703,7 @@ function makeWaypoints() {
       } else {
         const cheating = async () => {
           switchStarting("start_dev", true);
-          await sleep(1100);
+          await sleep(1001);
           d3.selectAll(".use-case")
             .transition()
             .duration(500)
@@ -718,10 +758,38 @@ function makeWaypoints() {
 
 // -------- main ---------
 
-function init() {
-  createTable(data);
+let data;
+
+// load data
+async function loadData() {
+  const response = await fetch("static/data/2023_ai_inventory_edit.csv");
+  const text = await response.text();
+  const d = d3.csvParse(text);
+
+  console.log("data loaded");
+  console.log(d);
+  return d;
+}
+
+async function init() {
+  data = await loadData();
+  tableData = data.map((d) => {
+    return {
+      Title: d.Title,
+      Department: d.Department,
+      Agency: d.Agency,
+      Office: d.Office,
+      Summary: d.Summary,
+      "Original Technique": d.Techniques,
+      "Inferred Technique": d.tech_clean,
+      "Source Code": d.Source_Code,
+    };
+  });
+  createTable(tableData);
   makeWaypoints();
   startingChart();
 }
 
-init();
+document.addEventListener("DOMContentLoaded", function () {
+  init();
+});

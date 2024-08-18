@@ -109,10 +109,11 @@
         such as in a table. As the federal government's
         <a target="_blank" href="https://resources.data.gov/PoD/principles/"
           >own principles</a
-        >outline, this data is not accessible and is not "available to the
-        widest range of users for the widest range of purposes."
+        >
+        outline, this data is not accessible and is not "available to the widest
+        range of users for the widest range of purposes."
       </p>
-      <p>
+      <p id="top">
         In an effort to make the inventory more digestible (wc), scroll along
         below to explore how the Federal Government has reported its use of AI.
         If you would like to skip to the inventory in full,
@@ -130,17 +131,16 @@
           one use case.
         </div>
         <div class="scroller" id="sExample">
-          For the inventory, each department and agency submitted their own
-          inventory of use cases. For example, the National Oceanic and
-          Atmospheric Administration included
-          <span class="highlight ex"
-            >VOLcanic Cloud Analysis Toolkit (VOLCAT)</span
-          >, an application system for detecting, tracking, characterizing, and
-          forecasting hazardous volcanic events.
-          <b
-            >Hover over a box to learn more about the specific model at any
-            time</b
-          >
+          For the inventory, each department and agency submitted their own list
+          of use cases. For example, the Department of Treasury included a
+          <span class="highlight ex">Collection Voice Bot</span>, an model to
+          help direct a taxpayer down to a certain call path given their speech.
+          <span id="hover-text">
+            <b
+              >Hover over a box to learn more about the specific model at any
+              time</b
+            >
+          </span>
         </div>
         <div class="scroller" id="sDep">
           The use cases are spread across 21 departments and agencies including
@@ -227,7 +227,7 @@
           <a target="_blank" href="link">neural networks</a> for
           <span class="highlight ex">facial recognition</span> but also includes
           <span class="highlight ex">analytics tools</span>, and
-          <span class="highlight ex">data infrastructure</span> technical tools
+          <span class="highlight ex">data infrastructure</span>, technical tools
           that most experts would not consider AI.
         </div>
         <div class="scroller" id="sTechMiss">
@@ -242,7 +242,7 @@
             >provided instructions to agencies</a
           >, over 50% of use cases have
           <span class="highlight non">no listed technique</span>. 10 of the 21
-          departments or agencies did not provide a technique for a single
+          departments / agencies did not provide a technique for a single
           reported use cases including the Department of Commerce, the
           Department of Health and Human Services, and the Department of Veteran
           Affairs.
@@ -250,22 +250,22 @@
         <div class="scroller" id="sTechSplit">
           Using the use case titles and summary, I attempted to standardize and
           fill in any missing techniques. While this is not a perfect
-          categorization, it does give insight into what how the federal
-          government is using AI. TODO Blank % of the models were this and that.
-          See all the categories I created using the drop down. TODO Click here
-          to view expanded definitions of each technique.
+          categorization, it does give insight into how the federal government
+          is using AI. TODO Blank % of the models were this and that. See all
+          the categories I created using the drop down. TODO Click here to view
+          expanded definitions of each technique.
         </div>
         <div class="scroller" id="sTechSource">
           In addition to technique, just 2% of the use cases have
           <span class="highlight ex">publicly available source code</span>. This
-          raises concerns about the transparency of the model being used by the
+          raises concerns about the transparency of AI tools being used by the
           federal government.
         </div>
         <div class="scroller" id="sStageMiss">
-          Also included in the inventory is information that indicates a use
-          case's stage in development. Once again, despite being a mandatory
-          field in the provided instruction, roughly 50% have no provided
-          development stage.
+          Also included in the inventory is information indicating a use case's
+          stage in development. Once again, despite being a mandatory field in
+          the provided instruction, roughly 50% have no provided development
+          stage.
         </div>
         <div class="scroller" id="sStageSplit">
           Of the use cases that did includes a development stage, roughly 50%
@@ -280,8 +280,9 @@
           inventory to be released on September 2024. In the meantime, you can
           explore the current inventory by hovering over the boxes below.
         </div>
+        <div class="scroller" id="sFake"></div>
       </div>
-      <div class="graphic-container"></div>
+      <div class="graphic-container" id="graphic-container"></div>
     </div>
     <div class="body-text" id="closing">
       <p></p>
@@ -340,13 +341,19 @@
         >
         is one example.
       </p>
+      <p id="scroll-to-top" style="text-align: center; margin-block: 10%">
+        <a href="javascript:scrollToTop()" id="topLink">
+          <i class="fa fa-hand-o-up" aria-hidden="true"></i> click here view to
+          a sortable table of the entire inventory.</a
+        >
+      </p>
     </div>
 
     <div id="table" class="ag-theme-quartz">
       <input
         type="text"
         id="filter-text-box"
-        placeholder="Filter..."
+        placeholder="Search..."
         oninput="onFilterTextBoxChanged()"
       />
     </div>
