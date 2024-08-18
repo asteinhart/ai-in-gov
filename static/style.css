@@ -5,12 +5,25 @@
   --mobileWidth: 90vw;
   --maxWidth: 900px;
   --hightlightColor: #800000;
+  --backgroundColor: #dfe3ea;
 }
 
 body {
   font-family: "Public Sans", Helvetica, sans-serif;
   margin: 0;
-  background: #f9f9f9;
+  background: var(--backgroundColor);
+}
+
+#ai-gov-logo {
+  margin-top: 30px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
+}
+
+#use-case-button {
+  width: var(--textWidth);
 }
 
 a {
@@ -36,7 +49,7 @@ a:hover {
   padding-left: 5vw;
   padding-right: 5vw;
   background-color: white;
-  border-bottom: #ee2b2b 1px solid;
+  border-bottom: #01397c 3px solid;
 }
 
 .title-container {
@@ -47,7 +60,7 @@ a:hover {
 
 .title-info h1 {
   font-size: 4em;
-  margin: 50px;
+  margin: 40px;
   text-align: center;
 }
 
@@ -61,7 +74,10 @@ a:hover {
   font-size: 1.2em;
   text-align: center;
   margin: 40px;
-  font-weight: 600;
+}
+
+.byline p {
+  margin: 5px;
 }
 
 .body-text {
@@ -76,11 +92,19 @@ a:hover {
   */
 }
 
+.container {
+  display: flex;
+}
+
+.scroller-container {
+  flex: 1;
+}
+
 .highlight {
   background-color: var(--hightlightColor);
   color: white;
   border-radius: 5px;
-  padding: 2px;
+  padding: 1.5px;
   font-weight: 600;
 }
 
@@ -108,9 +132,10 @@ a:hover {
 }
 
 #table {
-  width: 85%;
+  width: 95%;
   margin: auto;
-  height: 500px;
+  margin-bottom: 5%; /* for the search bar */
+  height: 600px;
 }
 
 .space {
@@ -121,15 +146,15 @@ a:hover {
 .scroller {
   position: relative;
   padding: 10px 20px;
-  width: 40%;
+  width: 80%;
   margin-top: 90vh;
   margin-bottom: 20vh;
-  margin-left: 5%;
   text-align: justify;
   word-spacing: -2px;
-  margin-right: auto;
-  line-height: 1.4;
+  margin-inline: auto;
+  line-height: 1.5;
   font-size: 1.3em;
+  z-index: 1;
 }
 
 .tooltip {
@@ -139,11 +164,8 @@ a:hover {
   border-radius: 3px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   padding: 15px 10px;
-  pointer-events: auto;
   position: relative;
-  max-width: 40%;
-  min-width: 40%;
-  z-index: 10;
+  width: 50%;
 }
 
 .tooltip-content {
@@ -167,16 +189,124 @@ a:hover {
 .graphic-container {
   position: sticky;
   top: 0vh;
-  z-index: 1;
-  margin: auto;
-  margin-right: 0;
   width: 100%;
-  display: flex;
   opacity: 0;
+  flex: 1;
+  align-self: flex-start;
+  z-index: 10;
 }
 
-svg {
-  position: absolute;
-  margin-left: 50%;
-  z-index: 3;
+.label-text {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.outro p {
+  padding-left: 20px;
+}
+
+.ex {
+  background-color: #515151;
+}
+
+.doe {
+  background-color: #800000;
+}
+
+.hhs {
+  background-color: #993404;
+}
+
+.doc {
+  background-color: #d95f0e;
+}
+
+.hs {
+  background-color: #fe9929;
+}
+
+.va {
+  background-color: #fed98e;
+  color: black;
+}
+.od {
+  background-color: grey;
+}
+
+.non {
+  background-color: grey;
+}
+
+/* mobile CSS */
+@media (min-width: 320px) and (max-width: 999px) {
+  html {
+    max-width: 100%;
+  }
+
+  body {
+    width: 100%;
+    position: relative;
+  }
+
+  .title-container {
+    width: var(--mobileWidth);
+  }
+
+  .title-info h1 {
+    margin: 5%;
+    font-size: 2em;
+  }
+
+  .title-info h4 {
+    font-size: 1.2em;
+  }
+  .byline p {
+    font-size: 1em;
+  }
+
+  #use-case-button {
+    width: 90%;
+    margin: auto;
+  }
+
+  .body-text {
+    width: var(--mobileWidth);
+    margin: 5%;
+  }
+
+  .container {
+    display: block;
+  }
+
+  .graphic-container {
+    top: 10%;
+    z-index: 1;
+  }
+  .scroller {
+    width: 65vw;
+    font-size: 12px;
+    background-color: white;
+    border-radius: 5px;
+    margin-inline: auto;
+    text-align: left;
+    word-spacing: normal;
+    z-index: 5;
+  }
+
+  svg {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .label-text {
+    font-size: 0.8em;
+  }
+
+  .tooltip {
+    max-width: 80%;
+    min-width: 80%;
+  }
+  .tooltip-content {
+    font-size: 0.8em;
+  }
 }

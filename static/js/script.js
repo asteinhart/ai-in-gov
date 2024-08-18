@@ -1,35 +1,33 @@
 // data todo
-// sort data with other at the bottom
+// load data correctly
+// mobiles version
 
 // ----- CONSTANTS -----
 const is_mobile = window.innerWidth < 600;
 const margin = { top: 10, right: 30, bottom: 30, left: 50 };
 const container = document.getElementById("container");
-const chartWidth = container.getBoundingClientRect().width * 0.4;
+const chartWidth = is_mobile
+  ? container.getBoundingClientRect().width * 0.9
+  : container.getBoundingClientRect().width * 0.4;
 let height;
 
-if (is_mobile) {
-  height = window.innerHeight * 0.5;
-} else {
-  height = window.innerHeight - margin.top - margin.bottom;
-}
-
-highlightColor = "#800000";
+highlightColor = "#515151";
 
 colorsDep = ["#fed98e", "#fe9929", "#d95f0e", "#993404", "#800000"];
 colorTech = ["#bae4bc", "#7bccc4", "#43a2ca", "#2c7bb6", "#0868ac"];
 const colors5 = {
-  "Department of Energy": colorsDep[0],
-  "Department of Health and Human Services": colorsDep[1],
+  "Department of Energy": colorsDep[4],
+  "Department of Health and Human Services": colorsDep[3],
   "Department of Commerce": colorsDep[2],
-  "Department of Homeland Security": colorsDep[3],
-  "Department of Veterans Affairs": colorsDep[4],
+  "Department of Homeland Security": colorsDep[1],
+  "Department of Veterans Affairs": colorsDep[0],
   "All Other Departments": "grey",
 
   "Unspecified Machine Learning": colorTech[4],
   "Neural Network": colorTech[3],
-  "No Technique Provided": "grey",
-  Other: colorTech[2],
+  Automation: colorTech[2],
+  Other: colorTech[1],
+  "All Other Techniques": "grey",
   "Natural Language Processing": colorTech[1],
   "Machine Vision": colorTech[0],
 };
@@ -40,9 +38,23 @@ const colors3 = {
   "In Use": colorsDev[0],
   "In Development": colorsDev[1],
   "In Planning": colorsDev[2],
+  "No Development Stage Indicated": "grey",
 };
 
-const defaultColor = "steelblue";
+const defaultColor = "#01397D";
+
+// -------- MOBILE ---------
+// ----- mobile ------
+if (is_mobile) {
+  height = window.innerHeight * 0.8;
+
+  parent = document.querySelector(".container");
+  chart = document.querySelector(".graphic-container");
+  scrollers = document.querySelector(".scroller-container");
+  parent.insertBefore(chart, scrollers);
+} else {
+  height = window.innerHeight - margin.top - margin.bottom;
+}
 
 // -------- LOAD/CLEAN DATA ---------
 
@@ -86,7 +98,7 @@ function highlightDep() {
   var chart = d3.select("#g-chart");
 
   chart
-    .selectAll("rect")
+    .selectAll(".use-case")
     .attr("stroke", (d) => (d.Department == dep ? "black" : "none"))
     .attr("stroke-width", (d) => (d.Department == dep ? 2 : 0));
 }
@@ -94,7 +106,9 @@ function highlightDep() {
 // -------- CHART ---------
 
 function boxSize(numWidth = 27) {
-  return (chartWidth - margin.left - margin.right) / numWidth - 4;
+  return is_mobile
+    ? 8
+    : (chartWidth - margin.left - margin.right) / numWidth - 3.7;
 }
 
 function startingChart() {
@@ -115,12 +129,7 @@ function startingChart() {
     .domain([0, startXMax]);
   y = d3.scaleLinear().range([height, 0]).domain([0, startYMax]);
 
-  // add axes
-  chart
-    .append("g")
-    .attr("id", "x-axis")
-    .attr("transform", "translate(0," + height + 20 + ")")
-    .call(d3.axisBottom(x));
+  // add axe
 
   let Tooltip = d3
     .select(".graphic-container")
@@ -178,6 +187,7 @@ function startingChart() {
   };
   var mousemove = function () {
     const [mouseX, mouseY] = d3.mouse(this);
+    const [absMouseX, absMouseY] = d3.mouse(document.body);
     const tooltipWidth = Tooltip.node().offsetWidth;
     const tooltipHeight = Tooltip.node().offsetHeight;
     const windowWidth = window.innerWidth;
@@ -186,9 +196,12 @@ function startingChart() {
     let tooltipX = mouseX + 100; // Add some offset to avoid overlapping with the cursor
     let tooltipY = mouseY;
 
+    console.log(absMouseX, tooltipWidth, windowWidth);
+
     // Adjust if the tooltip goes beyond the right edge of the window
-    if (tooltipX + tooltipWidth > windowWidth) {
-      tooltipX = mouseX - tooltipWidth - 10;
+
+    if (absMouseX + 100 + tooltipWidth > windowWidth) {
+      tooltipX = mouseX - tooltipWidth + 10;
     }
 
     // Adjust if the tooltip goes beyond the bottom edge of the window
@@ -259,6 +272,8 @@ function switchStarting(col, transition = false) {
   selection
     .attr("x", (d) => x(d[xName]))
     .attr("y", (d) => y(d[yName]))
+    .attr("width", boxSize())
+    .attr("height", boxSize())
     .attr("fill", defaultColor);
 }
 
@@ -277,6 +292,8 @@ function switchSplit(col, colName, colors, transition = true) {
   selection
     .attr("x", (d) => x(d[xName]))
     .attr("y", (d) => y(d[yName]))
+    .attr("width", boxSize())
+    .attr("height", boxSize())
     .attr("fill", (d) => colors[d[colName]] || "grey");
 
   // add labels
@@ -314,8 +331,6 @@ function switchSplit(col, colName, colors, transition = true) {
     id_text = "text-" + name.split(" ").join("_");
     id_rect = "rect-" + name.split(" ").join("_");
 
-    console.log(name, value);
-
     chart
       .append("text")
       .attr("id", id_text)
@@ -324,8 +339,6 @@ function switchSplit(col, colName, colors, transition = true) {
       .attr("text-anchor", "middle")
       .attr("y", y(value))
       .attr("fill", isDark(colors[name]) ? "black" : "white")
-      .attr("font-weight", "bold")
-      .attr("font-size", "1em")
       .attr("opacity", 0)
       .text(name + " (" + result[name] + ")");
 
@@ -424,19 +437,30 @@ function makeWaypoints() {
   });
   new Waypoint({
     element: document.getElementById("sExample"),
-    handler: function () {
-      // highlight one model
-      // change color
-      d3.select("g#DOC-0029-2023 rect")
-        .transition()
-        .duration(500)
-        .attr("fill", highlightColor);
-      // enable tooltip
-      d3.select("g#DOC-0029-2023 rect").dispatch("mouseover");
-      d3.select(".tooltip").style("left", "50%").style("top", 0);
-
-      //TODO;
-      //switchSplit("split_dep", depColors);
+    handler: function (direction) {
+      if (direction == "down") {
+        // highlight one model
+        // change color
+        d3.select("g#DOC-0029-2023 rect")
+          .transition()
+          .duration(1000)
+          .attr("fill", highlightColor)
+          .attr("x", x(-2))
+          .attr("width", boxSize() * 2)
+          .attr("height", boxSize() * 2);
+        // enable tooltip
+        if (!is_mobile) {
+          d3.select("g#DOC-0029-2023 rect").dispatch("mouseover");
+          d3.select(".tooltip")
+            .style("right", "5%")
+            .style("top", "5%")
+            .style("width", "100%");
+        }
+      } else {
+        // switch to starting chart
+        switchStarting("start_dep", true);
+        d3.select("g#DOC-0029-2023 rect").dispatch("mouseleave");
+      }
     },
     offset: offset,
   });
@@ -450,7 +474,25 @@ function makeWaypoints() {
         switchSplit("split_dep", "dep_edit", colors5);
       } else {
         // switch to starting chart
-        switchStarting("start_dep", true);
+
+        const cheating = async () => {
+          switchStarting("start_dep", true);
+          await sleep(1100);
+
+          d3.select("g#DOC-0029-2023 rect")
+            .transition()
+            .duration(1000)
+            .attr("fill", highlightColor)
+            .attr("x", x(-2))
+            .attr("width", boxSize() * 2)
+            .attr("height", boxSize() * 2);
+          // enable tooltip
+          if (!is_mobile) {
+            d3.select("g#DOC-0029-2023 rect").dispatch("mouseover");
+            d3.select(".tooltip").style("left", "50%").style("top", 0);
+          }
+        };
+        cheating();
       }
     },
     offset: offset,
@@ -468,16 +510,20 @@ function makeWaypoints() {
         const cheating = async () => {
           await sleep(1100);
           d3.selectAll(
-            "#DOC-0005-2023 rect, #DHS-0032-2023 rect, #HHS-0091-2023 rect"
+            "#DOC-0005-2023 rect, #DHS-0032-2023 rect, #HHS-0089-2023 rect, #HHS-0014-2023 rect"
           )
             .transition()
             .delay((d, i) => i * 100)
-            .attr("fill", highlightColor);
+            .attr("fill", highlightColor)
+            .attr("x", x(-2))
+            .attr("width", boxSize() * 2)
+            .attr("height", boxSize() * 2);
         };
         cheating();
       } else {
         // switch to starting chart
-        switchStarting("start_dep", true);
+        //switchStarting("start_dep", true);
+        switchSplit("split_dep", "dep_edit", colors5);
       }
     },
     offset: offset,
@@ -487,19 +533,42 @@ function makeWaypoints() {
     element: document.getElementById("sTechMiss"),
     handler: function (direction) {
       if (direction == "down") {
-        // just in case
-        switchStarting("start_t", false);
+        const cheating = async () => {
+          d3.selectAll(".use-case")
+            .transition()
+            .duration(500)
+            .attr("fill", defaultColor)
+            .attr("x", (d) => x(+d.start_t_x))
+            .attr("y", (d) => y(+d.start_t_y))
+            .attr("width", boxSize())
+            .attr("height", boxSize());
+          await sleep(550);
+          switchStarting("start_t", false);
+          d3.selectAll(".use-case")
+            .transition()
+            .duration(1000)
+            .attr("fill", (d) =>
+              !d.Techniques ? highlightColor : defaultColor
+            );
+        };
+        cheating();
 
         // show all the missing tech
-        d3.selectAll(".use-case")
-          .transition()
-          .duration(1000)
-          .attr("fill", (d) =>
-            d.tech_edit == "No Technique Provided" ? "grey" : defaultColor
-          );
       } else {
-        // switch to starting chart
-        //switchStarting("start_dep", true);
+        const cheating = async () => {
+          resetChart();
+          await sleep(1100);
+          d3.selectAll(
+            "#DOC-0005-2023 rect, #DHS-0032-2023 rect, #HHS-0089-2023 rect, #HHS-0014-2023 rect"
+          )
+            .transition()
+            .delay((d, i) => i * 100)
+            .attr("fill", highlightColor)
+            .attr("x", x(-2))
+            .attr("width", boxSize() * 2)
+            .attr("height", boxSize() * 2);
+        };
+        cheating();
       }
     },
     offset: offset,
@@ -511,8 +580,25 @@ function makeWaypoints() {
       if (direction == "down") {
         switchSplit("split_t", "tech_edit", colors5);
       } else {
-        // switch to starting chart
-        //switchStarting("start_dep", true);
+        const cheating = async () => {
+          d3.selectAll(".use-case")
+            .transition()
+            .duration(500)
+            .attr("fill", defaultColor)
+            .attr("x", (d) => x(+d.start_t_x))
+            .attr("y", (d) => y(+d.start_t_y))
+            .attr("width", boxSize())
+            .attr("height", boxSize());
+          await sleep(550);
+          switchStarting("start_t", false);
+          d3.selectAll(".use-case")
+            .transition()
+            .duration(1000)
+            .attr("fill", (d) =>
+              !d.Techniques ? highlightColor : defaultColor
+            );
+        };
+        cheating();
       }
     },
     offset: offset,
@@ -525,11 +611,10 @@ function makeWaypoints() {
           .transition()
           .duration(1000)
           .attr("fill", (d) =>
-            d.Source_Code ? "black" : colors5[d.tech_edit] || "grey"
+            d.Source_Code ? highlightColor : colors5[d.tech_edit] || "grey"
           );
       } else {
-        // switch to starting chart
-        //switchStarting("start_dep", true);
+        switchSplit("split_t", "tech_edit", colors5);
       }
     },
     offset: offset,
@@ -554,8 +639,17 @@ function makeWaypoints() {
         };
         cheating();
       } else {
-        // switch to starting chart
-        //switchStarting("start_dep", true);
+        const cheating = async () => {
+          switchSplit("split_t", "tech_edit", colors5);
+          await sleep(1050);
+          d3.selectAll(".use-case")
+            .transition()
+            .duration(1000)
+            .attr("fill", (d) =>
+              d.Source_Code ? highlightColor : colors5[d.tech_edit] || "grey"
+            );
+        };
+        cheating();
       }
     },
     offset: offset,
@@ -567,11 +661,37 @@ function makeWaypoints() {
       if (direction == "down") {
         switchSplit("split_dev", "dev_edit", colors3);
       } else {
-        // switch to starting chart
-        //switchStarting("start_dep", true);
+        const cheating = async () => {
+          switchStarting("start_dev", true);
+          await sleep(1100);
+          d3.selectAll(".use-case")
+            .transition()
+            .duration(500)
+            .attr("fill", (d) =>
+              d.dev_edit == "No Development Stage Indicated"
+                ? "grey"
+                : defaultColor
+            );
+        };
+        cheating();
       }
     },
     offset: offset,
+  });
+
+  new Waypoint({
+    element: document.getElementById("sClosing"),
+    handler: function (direction) {
+      if (direction == "down") {
+        //
+        console.log("closing");
+        switchStarting("start_dev", true);
+        //resetChart();
+      } else {
+        switchSplit("split_dev", "dev_edit", colors3);
+      }
+    },
+    offset: "60%",
   });
 
   new Waypoint({
@@ -579,7 +699,7 @@ function makeWaypoints() {
     handler: function (direction) {
       if (direction == "down") {
         //
-        d3.select(".graphic-container").style("position", "fixed");
+        //d3.select(".graphic-container").style("position", "fixed");
 
         d3.selectAll(".graphic-container, #sClosing")
           .transition()
