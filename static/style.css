@@ -4,7 +4,7 @@
   --textWidth: 50vw;
   --mobileWidth: 90vw;
   --maxWidth: 900px;
-  --hightlightColor: #800000;
+  --highlightColor: #01397d;
   --backgroundColor: #dfe3ea;
 }
 
@@ -27,13 +27,13 @@ body {
 }
 
 a {
-  color: black;
+  color: var(--highlightColor);
   font-weight: 600;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 a:visited {
-  color: black;
+  color: var(--highlightColor);
 }
 
 a:hover {
@@ -104,21 +104,15 @@ a:hover {
   background-color: var(--hightlightColor);
   color: white;
   border-radius: 5px;
-  padding: 1.5px;
+  padding-block: 1.5px;
+  padding-inline: 5px;
   font-weight: 600;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
-#tableLink {
-  text-decoration: none;
-  color: black;
-  font-weight: 600;
-}
-
-#tableLink:hover {
-  text-decoration: underline;
-}
-
-#dep-select {
+#dep-select,
+#tech-select {
   font-family: "Public Sans", Helvetica, sans-serif;
   background-color: var(--offwhiteColor);
   border: "black" 1px solid;
@@ -128,7 +122,8 @@ a:hover {
   width: 100%;
   padding: 5px;
   font-style: italic;
-  font-size: 1em;
+  font-size: 0.9em;
+  white-space: normal;
 }
 
 #table {
@@ -177,7 +172,6 @@ a:hover {
   margin-inline: auto;
   line-height: 1.5;
   font-size: 1.3em;
-  z-index: 1;
 }
 
 .tooltip {
@@ -216,7 +210,7 @@ a:hover {
 }
 
 #sFake {
-  background-color: var(--backgroundColor);
+  background-color: transparent;
 }
 
 .graphic-container {
@@ -226,7 +220,6 @@ a:hover {
   opacity: 0;
   flex: 1;
   align-self: flex-start;
-  z-index: 10;
 }
 
 .label-text {
@@ -239,39 +232,85 @@ a:hover {
 }
 
 .ex {
-  background-color: #515151;
+  background-color: var(--highlightColor);
 }
 
 .doe {
-  background-color: #800000;
+  background-color: #713200;
 }
 
 .hhs {
-  background-color: #993404;
+  background-color: #8f3e00;
 }
 
 .doc {
-  background-color: #d95f0e;
+  background-color: #a85311;
 }
 
 .hs {
-  background-color: #fe9929;
+  background-color: #c06722;
 }
 
 .va {
-  background-color: #fed98e;
-  color: black;
+  background-color: #da7e37;
 }
 .od {
   background-color: grey;
 }
 
+.use {
+  background-color: #602437;
+}
+
+.dev {
+  background-color: #8a2846;
+}
+
+.plan {
+  background-color: #b9375e;
+}
+
+.ml {
+  background-color: #10451d;
+}
+
 .non {
-  background-color: grey;
+  border: 2px solid var(--highlightColor);
+  border-radius: 5px;
+  color: black;
+  background-color: white;
 }
 
 svg {
   margin-left: 10%;
+}
+
+.content {
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  font-size: 0.9em;
+}
+
+.collapsible {
+  color: black;
+  cursor: pointer;
+  display: inline;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.collapsible:hover {
+  text-decoration: underline;
+}
+
+#scroll-to-top {
+  font-size: 1.5em;
+  text-align: center;
+  margin-inline: auto;
+  margin-block: 10%;
+  width: 40vw;
 }
 
 /* mobile CSS */
@@ -302,14 +341,13 @@ svg {
   }
 
   #use-case-button {
-    width: 90%;
+    width: 100%;
     margin: auto;
   }
 
   .body-text {
     width: var(--mobileWidth);
     margin: 5%;
-    font-size: 1.2em;
   }
 
   .container {
@@ -317,28 +355,38 @@ svg {
   }
 
   .graphic-container {
+    position: fixed;
     top: 10%;
-    z-index: 1;
+    z-index: -1;
+  }
+
+  .scroller-container {
+    z-index: 10;
   }
   .scroller {
-    width: 65vw;
+    width: 75vw;
     font-size: 0.95em;
     background-color: white;
     border-radius: 5px;
     margin-inline: auto;
     text-align: left;
     word-spacing: normal;
-    z-index: 5;
-    line-height: 1.2;
+    line-height: 1.3;
+    z-index: 10;
   }
 
   .highlight {
     padding-block: 0;
   }
 
+  .non {
+    border: 1.5px solid var(--highlightColor);
+  }
+
   svg {
+    position: relative;
     width: 100%;
-    margin-left: 0;
+    z-index: 1;
   }
 
   .label-text {
@@ -351,5 +399,23 @@ svg {
   }
   .tooltip-content {
     font-size: 0.8em;
+  }
+
+  #table {
+    margin-bottom: 10%;
+  }
+
+  .ag-theme-quartz {
+    --ag-font-size: 0.7em;
+    --ag-line-height: 20px;
+  }
+
+  #filter-text-box {
+    width: 95%;
+  }
+
+  #scroll-to-top {
+    width: 80vw;
+    font-size: 1.1em;
   }
 }

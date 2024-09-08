@@ -1,0 +1,66 @@
+Use_Case_ID,tech_manual
+DOJ-0003-2023,Other
+DOS-0000-2023,Automation
+DOS-0015-2023,Automation
+DOS-0017-2023,Automation
+DOS-0018-2023,Other
+DOS-0019-2023,Natural Language Processing
+DOS-0021-2023,Classification
+DOS-0024-2023,Time Series Forecast
+DOS-0030-2023,Classification
+EPA-0000-2023,Classification
+NASA-0023-2023,Machine Vision
+NASA-0030-2023,Neural Network
+TREAS-0009-2023,Unspecified Machine Learning
+TREAS-0012-2023,Large Language Model
+TREAS-0013-2023,Other
+DOE-0018-2023,Unspecified Machine Learning
+DOE-0019-2023,Unspecified Machine Learning
+DOE-0021-2023,Other
+DOE-0022-2023,Other
+DOE-0023-2023,Automation
+DOE-0024-2023,Other
+DOE-0025-2023,Other
+DOE-0026-2023,Unspecified Machine Learning
+DOE-0107-2023,Unspecified Machine Learning
+DOE-0161-2023,Unspecified Machine Learning
+DOE-0171-2023,Unspecified Machine Learning
+DOE-0172-2023,Neural Network
+HHS-0002-2023,Large Language Model
+HHS-0008-2023,Other
+HHS-0018-2023,Unspecified Machine Learning
+HHS-0019-2023,Unspecified Machine Learning
+HHS-0024-2023,Unspecified Machine Learning
+HHS-0025-2023,Neural Network
+HHS-0033-2023,Natural Language Processing
+HHS-0034-2023,Natural Language Processing
+HHS-0040-2023,Large Language Model
+HHS-0059-2023,Time Series Forecast
+HHS-0063-2023,Other
+HHS-0092-2023,Large Language Model
+HHS-0094-2023,Natural Language Processing
+HHS-0108-2023,Natural Language Processing
+HHS-0109-2023,Classification
+HHS-0120-2023,Unspecified Machine Learning
+HHS-0127-2023,Other
+HHS-0130-2023,Other
+HHS-0143-2023,Other
+HHS-0144-2023,Unspecified Machine Learning
+HHS-0147-2023,Classification
+HHS-0149-2023,Large Language Model
+HHS-0150-2023,Other
+HHS-0153-2023,Other
+HHS-0154-2023,Natural Language Processing
+DOC-0001-2023,Large Language Model
+DOC-0018-2023,Other
+DOC-0020-2023,Unspecified Machine Learning
+DOC-0032-2023,Unspecified Machine Learning
+DOC-0040-2023,Classification
+DOC-0043-2023,Unspecified Machine Learning
+DOC-0044-2023,Natural Language Processing
+VA-0009-2023,Machine Vision
+VA-0011-2023,Other
+VA-0024-2023,Unspecified Machine Learning
+VA-0035-2023,Natural Language Processing
+VA-0036-2023,Machine Vision
+VA-0038-2023,Unspecified Machine Learning
